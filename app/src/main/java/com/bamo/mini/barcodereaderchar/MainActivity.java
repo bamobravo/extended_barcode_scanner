@@ -1,6 +1,7 @@
 package com.bamo.mini.barcodereaderchar;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
@@ -123,8 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public Bitmap getTestBitMap(){
-        BitmapDrawable draw = new BitmapDrawable();
-        new PictureDrawable()
+        return BitmapFactory.decodeResource(getResources(),R.drawable.generated);
     }
 //    inner class for the surfaceView and surface holder
 

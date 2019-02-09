@@ -1,14 +1,10 @@
 package com.bamo.mini.barcodereaderchar;
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,18 +21,24 @@ public class FrameCallback implements  PreviewCallback {
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
-       int len = bytes.length;
-       Bitmap bMap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-       String code = decodeBarCode(bMap);
-       if (code !=null){
-           //get the code and display the code result on the activity file
-           //then  stop the capture or put a button to allow stop the capture
-           codeContainer.setText(code);
-       }
+        try {
+            int len = bytes.length;
+            Bitmap bMap = parentActivity.getTestBitMap(); //just to test the process without using the camera image first.
+//            Bitmap bMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            String code = decodeBarCode(bMap);
+            if (code != null) {
+                //get the code and display the code result on the activity file
+                //then  stop the capture or put a button to allow stop the capture
+                codeContainer.setText(code);
+            }
+        }
+        catch (Exception ex){
+            Toast.makeText(parentActivity,ex.getMessage(),3000).show();
+        }
     }
 
     //this class decodes the barcode images and return the result. if
-    public  String decodeBarCode(Bitmap raw){
+    public  String decodeBarCode(Bitmap raw) throws  Exception{
         String result = "";
         int whitePixelRange=255;
         int blackPixelRange = 0;
@@ -112,8 +114,16 @@ public class FrameCallback implements  PreviewCallback {
         char [] resultChar = new char[encoded.size()];
         int currentIndex = 0;
         BarcodeBinaryEncoding decoder = new BarcodeBinaryEncoding();
+        int firstIndex =-1;
         for (Character [] current: encoded) {
-            resultChar[currentIndex] = decoder.decode(current);
+            BarcodeBinaryEncoding.CodePosition position  = null;
+            if (currentIndex < 6){
+                position = BarcodeBinaryEncoding.CodePosition.lEFT;
+            }else{
+                position = BarcodeBinaryEncoding.CodePosition.RIGHT;
+            }
+            resultChar[currentIndex] = decoder.decode(current,position);
+            currentIndex++;
         }
         return new String(resultChar);
     }
@@ -126,7 +136,7 @@ public class FrameCallback implements  PreviewCallback {
             if (count==6)
                 startIndex+=3;
             List<Character> temp =charlist.subList(startIndex,startIndex+7);
-            Character [] tempArray = new Character[][temp.size()];
+            Character [] tempArray = new Character[temp.size()];
             result.add(temp.toArray(tempArray));
             startIndex+=7;
             count++;
