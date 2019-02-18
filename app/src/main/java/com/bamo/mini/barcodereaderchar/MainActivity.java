@@ -8,6 +8,7 @@ import android.graphics.drawable.PictureDrawable;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.nfc.Tag;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 //        cam = Camera.open();
-//        setContentView(R.layout.activity_main);
+          setContentView(R.layout.activity_main);
           surface=findViewById(R.id.cameraView);
           textContainer = findViewById(R.id.codeDisplay);
 //        holder = surface.getHolder();
@@ -44,15 +45,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void  onResume(){
         super.onResume();
-        cam = Camera.open();
-        setContentView(R.layout.activity_main);
-//        surface=(SurfaceView)findViewById(R.id.cameraView);
-        holder = surface.getHolder();
-        holder.addCallback(new CameraHandler());
-        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+//        cam = Camera.open();
+////        surface=(SurfaceView)findViewById(R.id.cameraView);
+//        holder = surface.getHolder();
+//        holder.addCallback(new CameraHandler());
+//        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
     public void showCamera(View buttonView){
         try {
+            FrameCallback encoder = new FrameCallback(this,(EditText) findViewById(R.id.codeDisplay));
+            encoder.startProcess(this,(EditText) findViewById(R.id.codeDisplay));
             if (cam==null){
                 cam = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
             }
@@ -124,7 +126,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     public Bitmap getTestBitMap(){
-        return BitmapFactory.decodeResource(getResources(),R.drawable.generated);
+
+        Bitmap result = BitmapFactory.decodeResource(getResources(),R.drawable.generated);
+        return result;
     }
 //    inner class for the surfaceView and surface holder
 

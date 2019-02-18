@@ -16,7 +16,6 @@ class BarcodeBinaryEncoding {
         RIGHT,
         lEFT,
         lEFT_EVEN
-
     }
 
     public BarcodeBinaryEncoding() throws Exception {
